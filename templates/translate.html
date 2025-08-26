@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translate | TaskBot v1+ AI</title>
+    <link rel="Icon" href="TaskBot logo.png">
+</head>
+<style>
+    body {
+        background-color: #2f2f2f;
+        font-family: Arial, sans-serif;
+        color: white;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    input {
+        width: 100%;
+        border-radius: 50px;
+        background-color: white;
+        color: black;
+        height: 40px;
+        font-size: large;
+    }
+
+    label {
+        color: white;
+    }
+
+    textarea {
+        width: 100%;
+        font-size: x-large;
+        height: 100px;
+        user-select: none;
+    }
+
+    button {
+        width: 100px;
+        height: 50px;
+        text-align: center;
+        float: right;
+    }
+
+    small {
+        display: block;
+        text-align: center;
+        color: gray;
+    }
+</style>
+
+<body>
+
+    <h1>Translator</h1>
+    <small>Powered by gemini-2.0-flash</small><br><br>
+
+    <label for="question">Text:</label>
+    <input type=" text" id="question" placeholder="Type your text here..."><br><br>
+
+    <label for="from">Translate From: </label>
+    <input type="text" id="from" style="width: 200px; height: auto;"><br><br><br>
+    <label for="to">Translate To: </label>
+    <input type="text" id="to" style="width: 200px; height: auto;"><br><br><br>
+
+    <button onclick=answer()>Start Translating</button><br><br><br>
+
+    <textarea name="answer" id="answer" placeholder="Your answer will be displayed here..."></textarea>
+
+
+    <script>
+        document.getElementById("from").value = "Auto Detect"
+        async function answer() {
+            const userInput = document.getElementById('question').value;
+            if (userInput.trim() === '') return;
+            const question = userInput;
+            const translate_from = document.getElementById("from").value;
+            const translate_to = document.getElementById("to").value;
+            const response = await fetch("/translate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({ question: question, translate_from: translate_from, translate_to: translate_to })
+            });
+            const data = await response.json();
+            const answer_area = document.getElementById("answer");
+            if (data.answer) {
+                aiResponse = data.answer;
+                answer_area.value = aiResponse
+            } else if (data.error) {
+                aiResponse = "Error: " + data.error;
+                answer_area.value = aiResponse
+            }
+        }
+    </script>
+</body>
+
+</html>

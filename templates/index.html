@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskBot v1+</title>
+    <script src="https://kit.fontawesome.com/cda0e70b18.js" crossorigin="anonymous"></script>
+    <link rel="Icon" href="TaskBot logo.png">
+    <link rel="manifest" href="/static/manifest.json">
+</head>
+
+<style>
+    body {
+        background-color: #2f2f2f;
+        font-family: Arial, sans-serif;
+        color: white;
+        margin: 0;
+        padding: 20px;
+        background: url("{{ url_for('static', filename='images/black bg.jpeg') }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center center;
+    }
+
+    nav {
+        background-color: #444;
+        padding: 5px;
+        border-radius: 5px;
+        width: 100%;
+        height: auto;
+        top: 0;
+    }
+
+    .sticky {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .sticky2 {
+        position: absolute;
+        top: 20px;
+        right: 80px;
+        z-index: 1000;
+    }
+
+    .sticky3 {
+        position: absolute;
+        top: 20px;
+        right: 140px;
+        z-index: 1000;
+    }
+
+    /* Dropdown Styles */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .btn {
+        background-color: transparent;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background-color: #494949;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: transparent;
+        backdrop-filter: blur(5px);
+        border: 1px solid black;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        text-align: center;
+    }
+
+    .dropdown-content h3 {
+        margin: 5px 0;
+        color: white;
+        text-align: center;
+    }
+
+    .dropdown-content a {
+        color: white;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        border-top: 1px solid transparent;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #bebebe;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: calc(100vh - 100px);
+        /* adjust if header height changes */
+        text-align: center;
+    }
+
+    /* Input and Button Styles */
+    #question {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-right: 10px;
+    }
+
+    .ai,
+    .user {
+        background-color: transparent;
+        backdrop-filter: blur(5px);
+        padding: 10px;
+        padding-right: 10px;
+        border-radius: 5px;
+        border: solid #ccc;
+        margin: 10px;
+        text-align: center;
+        justify-content: right;
+        width: 40%;
+        color: rgb(227, 227, 227)
+    }
+
+    .text1 {
+        display: flex;
+        justify-content: right;
+        align-items: center;
+        margin: 10px;
+    }
+
+    .text2 {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        margin: 10px;
+    }
+
+    .chat-input-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    #sendButton {
+        margin-left: 10px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #sendButton:hover {
+        background-color: #e0e0e0;
+    }
+
+    .inputWrapper {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        z-index: 1000;
+    }
+
+    .inputWrapper input {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .tools button {
+        font-size: 18px;
+        padding: 10px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+    }
+
+    #welcomeMessage {
+        text-align: center;
+        margin-top: 20%;
+    }
+
+    .tools-content {
+        display: none;
+
+    }
+
+    .tools:hover {
+        .tools-content {
+            display: block
+        }
+    }
+</style>
+
+<body>
+    <header>
+        <h2>TaskBot v1+</h2>
+        <hr color="white">
+        <div class="sticky">
+            <div class="dropdown">
+                <button class="btn" id="btn">
+                    <i class="fa-solid fa-bars fa-2xl"></i>
+                </button>
+                <div class="dropdown-content" id="dropdown-content">
+                    <h3 id="drop-down-h3-menu"><u>Menu</u></h3>
+                    <hr>
+                    <a href="https://taskbot-ai-as.netlify.app/">Home</a>
+                    <a href="https://taskbot-suggest.netlify.app/">Suggest</a>
+                    <a href="https://taskbot-complain.netlify.app/">Complain</a>
+                    <a href="https://taskbot-ai-as.netlify.app#contact">Contact</a>
+                    <a href="https://taskbot-ai-as.netlify.app#versions">More Versions</a>
+                    <a href="">Explore(Available soon)</a>
+                </div>
+            </div>
+        </div>
+        <div class="sticky2">
+            <div class="dropdown">
+                <button class="btn" id="btn">
+                    <i class="fa-solid fa-exclamation fa-2xl" id="i_class"></i>
+                </button>
+                <div class="dropdown-content">
+                    <h3 id="drop-down-h3-warnings"><u>Warnings</u></h3>
+                    <hr>
+                    <p class="para">1. Don't share personal info, chats may be reviewed and reused to train our models.
+                    </p>
+                    <hr>
+                    <p class="para">2. TaskBot can make mistakes, double check the answers for more accuracy.</p>
+                </div>
+            </div>
+        </div>
+        <div class="sticky3">
+            <div class="dropdown">
+                <button class="btn" id="btn">
+                    <i class="fa-solid fa-gear fa-2xl" id="i_class_2"></i>
+                </button>
+                <div class="dropdown-content">
+                    <h3 id="drop-down-h3-settings"><u>Settings</u></h3>
+                    <hr>
+                    <button id="theme">Theme: 🌙 (Dark)</button>
+                    <hr>
+                    <button id="version">Version: v1+</button>
+                    <hr>
+                    <button id="model">Model: Gemini 2.0 Flash</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <H1 id="welcomeMessage">Hello 👋, what can I help with?</H1>
+    <div id="chatArea">
+        <div class="text1">
+            <div class="user" style="display: none;"></div>
+        </div>
+        <div class="text2">
+            <div class="ai" style="display: none;"></div>
+        </div>
+    </div>
+
+    <main>
+        <div class="inputWrapper">
+            <input type="text" id="userInput" placeholder="Type your message here..."
+                style="width: 200px;color: white; backdrop-filter: blur(100px);background-color: transparent; border-radius: 50px;border: 1px solid #ccc;margin-right: 10px;margin-left: 10px;">
+            <div
+                style="display: flex; flex-direction: row; gap: 10px; margin-top: 10px; width: 100%; justify-content: center;">
+                <div class="tools">
+                    <div class="tools-content">
+                        <a href="/write"><button
+                                style="color: greenyellow;background-color: black;">Write</button></a><br>
+                        <a href="/summarize"><button
+                                style="color: greenyellow;background-color: black;">Summarize</button></a><br>
+                        <a href="/translate"><button
+                                style="color: greenyellow;background-color: black;">Translate</button></a><br>
+                        <a href="/imagine"><button
+                                style="color: greenyellow;background-color: black;">Imagine</button></a><br>
+                        <a href="/think"><button
+                                style="color: greenyellow;background-color: black;">Think</button></a><br>
+                    </div>
+                    <button style="background-color: black;">
+                        <i class="fa-solid fa-sliders fa-2xl" style="color: #63E6BE;"></i>
+                    </button>
+                </div>
+                <button id="sendButton" onclick="answer()"
+                    style="font-weight: bold; background-color: black; color: greenyellow">&#8593</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+        async function answer() {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            welcomeMessage.style.display = 'none'; // Hide the welcome message 
+            const userInput = document.getElementById('userInput').value;
+            if (userInput.trim() === '') return;
+            // Create wrapper for text1 (User message)
+            const text1 = document.createElement('div');
+            text1.className = 'text1';
+            const userMessage = document.createElement('div');
+            userMessage.className = 'user';
+            userMessage.textContent = userInput;
+            text1.appendChild(userMessage);
+            // Append user message to the chat area
+            document.getElementById('chatArea').appendChild(text1);
+            // Clear input
+            document.getElementById('userInput').value = '';
+            const question = userInput; // Use the already retrieved value
+            // Send a POST request to the /ask route
+            const response = await fetch("/ask", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({ question: question })
+            });
+            const data = await response.json();
+            // Create wrapper for text2 (AI response)
+            const text2 = document.createElement('div');
+            text2.className = 'text2';
+            const aiResponse = document.createElement('div');
+            aiResponse.className = 'ai';
+            if (data.answer) {
+                aiResponse.textContent = data.answer;
+            } else if (data.error) {
+                aiResponse.textContent = "Error: " + data.error;
+            }
+            text2.appendChild(aiResponse);
+            // Append AI response to the chat area
+            document.getElementById('chatArea').appendChild(text2);
+        }
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker
+                .register("/static/service-worker.js")
+                .then(() => console.log("Service Worker Registered"))
+                .catch((err) => console.error("SW registration failed:", err));
+        }
+
+        document.getElementById("theme").addEventListener("click", () => {
+            if (document.getElementsByTagName("body")[0].style.backgroundColor === "black") {
+                document.getElementsByTagName("body")[0].style.backgroundColor = "#2f2f2f";
+                document.getElementById("theme").textContent = "Theme: ☀️ (Light)";
+                document.getElementById("welcomeMessage").style.color = "black";
+                document.getElementsByTagName("body")[0].style.backgroundImage = "url({{ url_for('static', filename='images/light bg.jpeg') }})";
+                document.getElementById("drop-down-h3-menu").style.color = "black"
+                document.getElementById("drop-down-h3-settings").style.color = "black"
+                document.getElementById("drop-down-h3-warnings").style.color = "black"
+                document.getElementById("btn").style.color = "black"
+                document.querySelectorAll(".user").forEach(element => {
+                    element.style.color = "black"
+                });
+                document.querySelectorAll(".ai").forEach(element => {
+                    element.style.color = "black"
+                })
+                document.querySelectorAll(".dropdown-content a").forEach(element => {
+                    element.style.color = "black"
+                })
+                document.getElementById("i_class").style.color = "black";
+                document.querySelectorAll(".dropdown-content p").forEach(element => {
+                    element.style.color = "black"
+                })
+                document.getElementById("i_class_2").style.color = "black";
+                document.getElementsByTagName("h2")[0].style.color = "black";
+            } else {
+                document.getElementsByTagName("body")[0].style.backgroundColor = "black";
+                document.getElementById("theme").textContent = "Theme: 🌙 (Dark)";
+                document.getElementById("welcomeMessage").style.color = "white";
+                document.getElementsByTagName("body")[0].style.backgroundImage = "url({{ url_for('static', filename='images/black bg.jpeg') }})";
+                document.getElementById("drop-down-h3-menu").style.color = "white"
+                document.getElementById("drop-down-h3-settings").style.color = "white"
+                document.getElementById("drop-down-h3-warnings").style.color = "white"
+                document.querySelectorAll(".user").forEach(elements => {
+                    elements.style.color = "white"
+                })
+                document.querySelectorAll(".ai").forEach(elements => {
+                    elements.style.color = "white"
+                })
+                document.getElementById("btn").style.color = "white"
+                document.querySelectorAll(".dropdown-content a").forEach(element => {
+                    element.style.color = "white"
+                })
+                document.getElementById("i_class").style.color = "white";
+                document.querySelectorAll(".dropdown-content p").forEach(element => {
+                    element.style.color = "white"
+                })
+                document.getElementById("i_class_2").style.color = "white";
+                document.getElementsByTagName("h2")[0].style.color = "white";
+            }
+        })
+        document.getElementById("userInput").addEventListener("keypress", () => {
+            if (event.key === "Enter") {
+                sendButton.click()
+            }
+        })
+    </script>
+
+</body>
+
+</html>

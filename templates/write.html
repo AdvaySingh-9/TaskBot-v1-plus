@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write | TaskBot v1+ AI</title>
+    <link rel="Icon" href="TaskBot logo.png">
+    </link>
+</head>
+<style>
+    body {
+        background-color: #2f2f2f;
+        font-family: Arial, sans-serif;
+        color: white;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    #topic {
+        width: 100%;
+        border-radius: 50px;
+        background-color: white;
+        color: black;
+        height: 40px;
+        font-size: large;
+    }
+
+    select {
+        border-radius: 50px;
+    }
+
+    input {
+        border-radius: 50px;
+    }
+
+    textarea {
+        height: 300px;
+        width: 100%;
+    }
+
+    button {
+        width: 100px;
+        height: 50px;
+        text-align: center;
+        float: right;
+    }
+
+    small {
+        color: gray;
+        display: block;
+        text-align: center;
+    }
+</style>
+
+<body>
+    <h1>Write Mate</h1>
+    <small>Powered by gemini-2.0-flash</small>
+
+    <lable for="topic">Topic:</lable>
+    <input type="text" id="topic"><br><br><br>
+
+    <label for="fruits">Type: </label>
+    <select id="type" name="type">
+        <option value="para">Paragraph</option>
+        <option value="essay">Essay</option>
+        <option value="speech">Speech</option>
+    </select><br><br><br>
+
+    <label for="word-limit">Word Limit: </label>
+    <input type="number" id="word-limit"><br><br><br>
+
+    <button onclick=answer()>Start Writing</button><br><br>
+
+    <textarea name="answer" id="answer" placeholder="Your answer will be displayed here..."></textarea>
+
+    <script>
+        async function answer() {
+            const userInput = document.getElementById('topic').value;
+            if (userInput.trim() === '') return;
+
+            const word_limit = document.getElementById("word-limit").value;
+            const type = document.getElementById("type").value;
+
+            try {
+                const response = await fetch("/write", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({ question: userInput, word_limit: word_limit, type: type })
+                });
+
+                const data = await response.json();
+                console.log("Server Response:", data); // DEBUG LINE
+
+                const answer_area = document.getElementById("answer");
+                if (data.answer) {
+                    answer_area.value = data.answer; // set textarea value
+                } else if (data.error) {
+                    answer_area.value = "Error: " + data.error;
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                document.getElementById("answer").value = err;
+            }
+        }
+
+    </script>
+</body>
+
+</html>
